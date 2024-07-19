@@ -1,4 +1,8 @@
-import { DarkTheme, DefaultTheme, ThemeProvider } from "@react-navigation/native";
+import {
+  DarkTheme,
+  DefaultTheme,
+  ThemeProvider,
+} from "@react-navigation/native";
 import { useFonts } from "expo-font";
 import { Stack } from "expo-router";
 import * as SplashScreen from "expo-splash-screen";
@@ -8,6 +12,7 @@ import "react-native-reanimated";
 import { useColorScheme } from "@/hooks/useColorScheme";
 import { SafeAreaProvider } from "react-native-safe-area-context";
 import CartProvider from "@/contexts/CartProvider";
+import AuthProvider from "@/contexts/AuthProvider";
 
 // Prevent the splash screen from auto-hiding before asset loading is complete.
 SplashScreen.preventAutoHideAsync();
@@ -31,17 +36,24 @@ export default function RootLayout() {
   return (
     <SafeAreaProvider>
       <ThemeProvider value={colorScheme === "dark" ? DarkTheme : DefaultTheme}>
-        <CartProvider>
-          <Stack>
-            <Stack.Screen name="(user)" />
-            <Stack.Screen name="(admin)" />
-            <Stack.Screen name="+not-found" />
-            <Stack.Screen
-              name="cart"
-              options={{ title: "Cart", presentation: "modal", animation: "slide_from_bottom" }}
-            />
-          </Stack>
-        </CartProvider>
+        <AuthProvider>
+          <CartProvider>
+            <Stack>
+              <Stack.Screen name="(user)" />
+              <Stack.Screen name="(admin)" />
+              <Stack.Screen name="(auth)" />
+              <Stack.Screen name="+not-found" />
+              <Stack.Screen
+                name="cart"
+                options={{
+                  title: "Cart",
+                  presentation: "modal",
+                  animation: "slide_from_bottom",
+                }}
+              />
+            </Stack>
+          </CartProvider>
+        </AuthProvider>
       </ThemeProvider>
     </SafeAreaProvider>
   );
