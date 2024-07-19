@@ -1,5 +1,11 @@
-import { Stack } from "expo-router";
+import { Link, Stack } from "expo-router";
 
 export default function _layout() {
-  return <Stack />;
+  return (
+    <Stack
+      screenOptions={{
+        headerRight: () => <Link href="/cart">Cart</Link>,
+      }}
+    />
+  );
 }
