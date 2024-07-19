@@ -41,7 +41,7 @@ export default function ProductDetails() {
           title: product.name,
 
           headerRight: () => (
-            <Link href="/" asChild>
+            <Link href={`/(admin)/menu/create?id=${id}`} asChild>
               <Pressable>
                 {({ pressed }) => (
                   <FontAwesome
@@ -56,7 +56,10 @@ export default function ProductDetails() {
           ),
         }}
       />
-      <Image source={{ uri: product.image || defaultPizzaImage }} style={styles.image} />
+      <Image
+        source={{ uri: product.image || defaultPizzaImage }}
+        style={styles.image}
+      />
 
       <Text style={styles.title}>{product.name}</Text>
       <Text style={styles.price}>${product.price}</Text>
