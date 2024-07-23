@@ -1,19 +1,45 @@
 import { FlatList, Pressable, StyleSheet, Text, View } from "react-native";
-import React from "react";
 import { Stack, useLocalSearchParams } from "expo-router";
-import orders from "@/assets/data/orders";
+
 import OrderListItem from "@/components/OrderListItem";
 import OrderDetailsListItem from "@/components/OrderDetailsListItem";
-import { OrderStatusList } from "@/constants/types";
-import { Colors } from "@/constants/Colors";
+import { OrderStatus, OrderStatusList } from "@/constants/types";
+import colors from "@/constants/colors";
+import { useOrderDetails, useUpdateOrder } from "@/api/orders";
+import updateOrder from "@/api/orders/update-order";
 
 export default function OrderDetailsScreen() {
-  const { id } = useLocalSearchParams();
+  const { id } = useLocalSearchParams<{ id: string }>();
 
-  const order = orders.find((order) => order.id.toString() === id);
+  const { data: order, error, isLoading } = useOrderDetails(+(id ?? 1));
+  const { mutate } = useUpdateOrder();
+
+  const updateOrder = (status: OrderStatus) => {
+    if (!id) return;
+
+    mutate(
+      { id: +id, status: status },
+      {
+        onSuccess: () => {
+          console.log("Order updated");
+        },
+        onError: (error) => {
+          console.error("Error updating order", error);
+        },
+      }
+    );
+  };
+
+  if (isLoading) {
+    return <Text>Loading...</Text>;
+  }
+
+  if (error) {
+    return <Text>Error: {error.message}</Text>;
+  }
 
   if (!order) {
-    return <Text>Order not found</Text>;
+    return <Text>Product not found</Text>;
   }
 
   return (
@@ -32,23 +58,23 @@ export default function OrderDetailsScreen() {
               {OrderStatusList.map((status) => (
                 <Pressable
                   key={status}
-                  onPress={() => console.warn("Update status")}
+                  onPress={() => updateOrder(status)}
                   style={{
-                    borderColor: Colors.light.tint,
+                    borderColor: colors.light.tint,
                     borderWidth: 1,
                     padding: 10,
                     borderRadius: 5,
                     marginVertical: 10,
                     backgroundColor:
                       order.status === status
-                        ? Colors.light.tint
+                        ? colors.light.tint
                         : "transparent",
                   }}
                 >
                   <Text
                     style={{
                       color:
-                        order.status === status ? "white" : Colors.light.tint,
+                        order.status === status ? "white" : colors.light.tint,
                     }}
                   >
                     {status}

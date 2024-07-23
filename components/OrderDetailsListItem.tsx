@@ -1,6 +1,6 @@
 import { View, Text, StyleSheet, Image } from "react-native";
 import React from "react";
-import { Colors } from "@/constants/Colors";
+import colors from "@/constants/colors";
 import { OrderItem } from "@/constants/types";
 import { defaultPizzaImage } from "./ProductListItem";
 
@@ -9,6 +9,10 @@ type OrderItemListItemProps = {
 };
 
 const OrderItemListItem = ({ item }: OrderItemListItemProps) => {
+  if (!item.products) {
+    return null;
+  }
+
   return (
     <View style={styles.container}>
       <Image
@@ -66,7 +70,7 @@ const styles = StyleSheet.create({
     fontSize: 18,
   },
   price: {
-    color: Colors.light.tint,
+    color: colors.light.tint,
     fontWeight: "bold",
   },
 });

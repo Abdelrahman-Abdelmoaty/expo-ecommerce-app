@@ -1,7 +1,7 @@
 import { StyleSheet, Text, View, Image, Pressable } from "react-native";
-import { Colors } from "../constants/Colors";
+import colors from "../constants/colors";
 import { Link, useSegments } from "expo-router";
-import { Product } from "@/constants/types";
+import { Product, Tables } from "@/constants/types";
 
 export const defaultPizzaImage =
   "https://notjustdev-dummy.s3.us-east-2.amazonaws.com/food/default.png";
@@ -50,7 +50,7 @@ const styles = StyleSheet.create({
   },
 
   price: {
-    color: Colors.light.tint,
+    color: colors.light.tint,
     fontWeight: "700",
   },
 });

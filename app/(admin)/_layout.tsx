@@ -1,10 +1,10 @@
 import { Redirect, Tabs } from "expo-router";
 import FontAwesome from "@expo/vector-icons/FontAwesome";
 
-import { TabBarIcon } from "@/components/navigation/TabBarIcon";
-import { Colors } from "@/constants/Colors";
+import { TabBarIcon } from "@/components/native/TabBarIcon";
+import colors from "@/constants/colors";
 import { useColorScheme } from "@/hooks/useColorScheme";
-import { useAuth } from "@/contexts/AuthProvider";
+import { useAuth } from "@/providers/AuthProvider";
 
 export default function TabLayout() {
   const colorScheme = useColorScheme();
@@ -18,10 +18,10 @@ export default function TabLayout() {
   return (
     <Tabs
       screenOptions={{
-        tabBarActiveTintColor: Colors.light.background,
+        tabBarActiveTintColor: colors.light.background,
         headerShown: true,
         tabBarStyle: {
-          backgroundColor: Colors.light.tint,
+          backgroundColor: colors.light.tint,
         },
       }}
     >

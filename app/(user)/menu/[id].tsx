@@ -1,79 +1,106 @@
 import { useLocalSearchParams, Stack, useRouter } from "expo-router";
-import { Text, View, StyleSheet, Image, Pressable } from "react-native";
-import products from "@/assets/data/products";
-import { defaultPizzaImage } from "@/components/ProductListItem";
+import {
+  Text,
+  View,
+  StyleSheet,
+  Image,
+  Pressable,
+  ScrollView,
+} from "react-native";
 import { useState } from "react";
-import Button from "@/components/Button";
-import { useCart } from "@/contexts/CartProvider";
-import { PizzaSize } from "@/constants/types";
 
-const SIZES: PizzaSize[] = ["S", "M", "L", "XL"];
+import { defaultPizzaImage } from "@/components/ProductListItem";
+import Button from "@/components/Button";
+import { useCart } from "@/providers/CartProvider";
+import { Size } from "@/constants/types";
+import { useProduct } from "@/api/products";
+
+const SIZES: Size[] = ["S", "M", "L", "XL"];
 
 export default function ProductDetails() {
-  const { id } = useLocalSearchParams();
   const { addItem } = useCart();
-
   const router = useRouter();
+  const [selectedSize, setSelectedSize] = useState<Size>("M");
 
-  const [selectedSize, setSelectedSize] = useState<PizzaSize>("M");
+  const { id } = useLocalSearchParams();
+  if (typeof id !== "string") {
+    return <Text>Invalid product id</Text>;
+  }
 
-  const product = products.find((product) => product.id.toString() === id);
+  const { data: product, error, isLoading } = useProduct(+id);
 
   const addToCart = () => {
     if (!product) {
       return;
     }
-
     addItem(product, selectedSize);
     router.push("/cart");
   };
+
+  if (isLoading) {
+    return <Text>Loading...</Text>;
+  }
+
+  if (error) {
+    return <Text>Error: {error.message}</Text>;
+  }
 
   if (!product) {
     return <Text>Product not found</Text>;
   }
 
   return (
-    <View style={styles.container}>
-      <Stack.Screen options={{ title: product.name }} />
-      <Image source={{ uri: product.image || defaultPizzaImage }} style={styles.image} />
-      <Text style={styles.sizeTitle}>Select size</Text>
-      <View style={styles.sizeContainer}>
-        {SIZES.map((size) => (
-          <Pressable
-            key={size}
-            style={[
-              styles.size,
-              {
-                backgroundColor: selectedSize === size ? "#f0f0f0" : "#ffffff",
-              },
-            ]}
-            onPress={() => setSelectedSize(size)}
-          >
-            <Text
+    <ScrollView contentContainerStyle={styles.scrollContainer}>
+      <View style={styles.container}>
+        <Stack.Screen options={{ title: product.name }} />
+        <Image
+          source={{ uri: product.image || defaultPizzaImage }}
+          style={styles.image}
+        />
+        <Text style={styles.sizeTitle}>Select size</Text>
+        <View style={styles.sizeContainer}>
+          {SIZES.map((size) => (
+            <Pressable
               key={size}
               style={[
-                styles.sizeText,
+                styles.size,
                 {
-                  color: selectedSize === size ? "black" : "gray",
+                  backgroundColor:
+                    selectedSize === size ? "#f0f0f0" : "#ffffff",
                 },
               ]}
+              onPress={() => setSelectedSize(size)}
             >
-              {size}
-            </Text>
-          </Pressable>
-        ))}
+              <Text
+                key={size}
+                style={[
+                  styles.sizeText,
+                  {
+                    color: selectedSize === size ? "black" : "gray",
+                  },
+                ]}
+              >
+                {size}
+              </Text>
+            </Pressable>
+          ))}
+        </View>
+        <Text style={styles.price}>${product.price}</Text>
+        <Button text="Add to cart" onPress={addToCart} />
       </View>
-      <Text style={styles.price}>${product.price}</Text>
-      <Button text="Add to cart" onPress={addToCart} />
-    </View>
+    </ScrollView>
   );
 }
 
 const styles = StyleSheet.create({
+  scrollContainer: {
+    flexGrow: 1,
+    justifyContent: "center",
+  },
   container: {
     backgroundColor: "white",
-    flex: 1,
     padding: 10,
+    flex: 1,
     gap: 10,
   },
   sizeTitle: {

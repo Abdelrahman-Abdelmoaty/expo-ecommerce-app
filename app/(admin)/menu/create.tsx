@@ -1,81 +1,138 @@
 import { StyleSheet, Text, View, TextInput, Image, Alert } from "react-native";
 import { useEffect, useState } from "react";
-import Button from "@/components/Button";
-import { defaultPizzaImage } from "@/components/ProductListItem";
 import * as ImagePicker from "expo-image-picker";
-import { Stack, useLocalSearchParams } from "expo-router";
-import products from "@/assets/data/products";
+import { Stack, useLocalSearchParams, useRouter } from "expo-router";
+import { z } from "zod";
+import { Controller, useForm } from "react-hook-form";
+import { zodResolver } from "@hookform/resolvers/zod";
+
+import { defaultPizzaImage } from "@/components/ProductListItem";
+import Button from "@/components/Button";
+import getProduct from "@/api/products/get-product";
+import {
+  useInsertProduct,
+  useDeleteProduct,
+  useProduct,
+  useUpdateProduct,
+} from "@/api/products";
+
+const createProductSchema = z.object({
+  name: z.string().min(1, "Name is required"),
+  price: z.string().min(1, "Price is required"),
+});
 
 export default function CreateProductScreen() {
-  const [name, setName] = useState("");
-  const [price, setPrice] = useState("");
-  const [image, setImage] = useState("");
-
   const { id } = useLocalSearchParams();
-
   const isUpdating = !!id;
+
+  const { data: product } = isUpdating ? useProduct(+id) : {};
+
+  const {
+    control,
+    handleSubmit,
+    reset,
+    formState: { errors },
+  } = useForm<z.infer<typeof createProductSchema>>({
+    resolver: zodResolver(createProductSchema),
+    defaultValues: {
+      name: isUpdating ? product?.name : "",
+      price: isUpdating ? product?.price.toString() : "",
+    },
+  });
+  const [image, setImage] = useState<string>(
+    isUpdating && product?.image ? product?.image : ""
+  );
+  const { mutate: createProduct } = useInsertProduct();
+  const { mutate: updateProduct } = useUpdateProduct();
+  const { mutate: deleteProduct } = useDeleteProduct();
+  const router = useRouter();
 
   useEffect(() => {
     if (isUpdating) {
-      const product = products.find((product) => product.id.toString() === id);
-      if (product) {
-        setName(product.name);
-        setPrice(product.price.toString());
-        setImage(product.image);
-      }
+      const fetchProduct = async () => {
+        const product = await getProduct(+id);
+        if (product) {
+          setImage(product.image || defaultPizzaImage);
+        }
+      };
+      fetchProduct();
     }
   }, []);
 
-  const onSubmit = () => {
+  const onSubmit = (data: z.infer<typeof createProductSchema>) => {
     if (isUpdating) {
-      onUpdate();
+      onUpdate(data);
     } else {
-      onCreate();
+      onCreate(data);
     }
   };
 
-  const onCreate = () => {
-    // Create the product
-    console.log(name, price);
-    resetFields();
+  const onCreate = async (data: z.infer<typeof createProductSchema>) => {
+    createProduct(
+      {
+        name: data.name,
+        price: +data.price,
+        image: image,
+      },
+      {
+        onSuccess: () => {
+          reset();
+          setImage("");
+          router.back();
+        },
+      }
+    );
   };
 
-  const onUpdate = () => {
-    // Update the product
-    console.log(name, price);
-    resetFields();
-  };
+  const onUpdate = (data: z.infer<typeof createProductSchema>) => {
+    if (!id) return;
 
-  const resetFields = () => {
-    setName("");
-    setPrice("");
+    updateProduct(
+      {
+        id: +id,
+        name: data.name,
+        price: +data.price,
+        image: image,
+      },
+      {
+        onSuccess: () => {
+          reset();
+          setImage("");
+          router.back();
+        },
+      }
+    );
+
+    reset();
     setImage("");
   };
 
+  const onDelete = () => {
+    if (!id) return;
+
+    deleteProduct(+id, {
+      onSuccess: () => {
+        reset();
+        setImage("");
+        router.back();
+      },
+    });
+  };
+
   const confirmDelete = () => {
-    // Show an alert to confirm the delete
-    console.log("Delete");
     Alert.alert("Confirm", "Are you sure you want to delete this product?", [
       { text: "Cancel", style: "cancel" },
       { text: "Delete", style: "destructive", onPress: onDelete },
     ]);
   };
 
-  const onDelete = () => {
-    // Delete the product
-    console.log("Delete confirmed");
-  };
-
   const pickImage = async () => {
-    // No permissions request is necessary for launching the image library
     let result = await ImagePicker.launchImageLibraryAsync({
       mediaTypes: ImagePicker.MediaTypeOptions.Images,
       allowsEditing: true,
       aspect: [1, 1],
       quality: 1,
     });
-
-    console.log(result);
 
     if (!result.canceled) {
       setImage(result.assets[0].uri);
@@ -88,32 +145,57 @@ export default function CreateProductScreen() {
         options={{ title: isUpdating ? "Update Product" : "Create Product" }}
       />
 
-      <Image
-        source={{ uri: image || defaultPizzaImage }}
-        style={styles.image}
-      />
-      <Text onPress={pickImage} style={styles.selectImage}>
-        Select Image
-      </Text>
+      <View>
+        <Image
+          source={{ uri: image || defaultPizzaImage }}
+          style={styles.image}
+        />
+        <Text onPress={pickImage} style={styles.selectImage}>
+          Select Image
+        </Text>
+      </View>
 
-      <Text style={styles.label}>Name</Text>
-      <TextInput
-        value={name}
-        onChangeText={setName}
-        placeholder="Name"
-        style={styles.input}
-      />
+      <View>
+        <Text style={styles.label}>Name</Text>
+        <Controller
+          control={control}
+          name="name"
+          render={({ field: { value, onChange, onBlur } }) => (
+            <TextInput
+              value={value}
+              onChangeText={onChange}
+              onBlur={onBlur}
+              placeholder="Name"
+              style={styles.input}
+            />
+          )}
+        />
+        {errors.name && <Text>{errors.name.message}</Text>}
+      </View>
 
-      <Text style={styles.label}>Price</Text>
-      <TextInput
-        value={price}
-        onChangeText={setPrice}
-        placeholder="9.99"
-        style={styles.input}
-        keyboardType="numeric"
-      />
+      <View>
+        <Text style={styles.label}>Price</Text>
+        <Controller
+          control={control}
+          name="price"
+          render={({ field: { value, onChange, onBlur } }) => (
+            <TextInput
+              value={value}
+              onChangeText={onChange}
+              onBlur={onBlur}
+              placeholder="9.99"
+              style={styles.input}
+              keyboardType="numeric"
+            />
+          )}
+        />
+        {errors.price && <Text>{errors.price.message}</Text>}
+      </View>
 
-      <Button text={isUpdating ? "Update" : "Create"} onPress={onSubmit} />
+      <Button
+        text={isUpdating ? "Update" : "Create"}
+        onPress={handleSubmit(onSubmit)}
+      />
       {isUpdating && <Button text="Delete" onPress={confirmDelete} />}
     </View>
   );

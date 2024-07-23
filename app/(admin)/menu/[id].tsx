@@ -1,34 +1,30 @@
 import { useLocalSearchParams, Stack, useRouter, Link } from "expo-router";
 import { Text, View, StyleSheet, Image, Pressable } from "react-native";
-import products from "@/assets/data/products";
-import { defaultPizzaImage } from "@/components/ProductListItem";
 import { useState } from "react";
-import Button from "@/components/Button";
-import { useCart } from "@/contexts/CartProvider";
-import { PizzaSize } from "@/constants/types";
 import { FontAwesome } from "@expo/vector-icons";
-import { Colors } from "@/constants/Colors";
 
-const SIZES: PizzaSize[] = ["S", "M", "L", "XL"];
+import { useProduct } from "@/api/products";
+import { defaultPizzaImage } from "@/components/ProductListItem";
+import { useCart } from "@/providers/CartProvider";
+import { Size } from "@/constants/types";
+import colors from "@/constants/colors";
 
 export default function ProductDetails() {
-  const { id } = useLocalSearchParams();
+  const { id } = useLocalSearchParams<{ id: string }>();
+
   const { addItem } = useCart();
-
   const router = useRouter();
+  const [selectedSize, setSelectedSize] = useState<Size>("M");
 
-  const [selectedSize, setSelectedSize] = useState<PizzaSize>("M");
+  const { data: product, error, isLoading } = useProduct(+(id ?? 1));
 
-  const product = products.find((product) => product.id.toString() === id);
+  if (isLoading) {
+    return <Text>Loading...</Text>;
+  }
 
-  const addToCart = () => {
-    if (!product) {
-      return;
-    }
-
-    addItem(product, selectedSize);
-    router.push("/cart");
-  };
+  if (error) {
+    return <Text>Error: {error.message}</Text>;
+  }
 
   if (!product) {
     return <Text>Product not found</Text>;
@@ -47,7 +43,7 @@ export default function ProductDetails() {
                   <FontAwesome
                     name="pencil"
                     size={24}
-                    color={Colors.light.tint}
+                    color={colors.light.tint}
                     style={{ marginRight: 10, opacity: pressed ? 0.5 : 1 }}
                   />
                 )}

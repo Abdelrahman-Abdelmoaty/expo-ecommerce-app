@@ -11,8 +11,10 @@ import "react-native-reanimated";
 
 import { useColorScheme } from "@/hooks/useColorScheme";
 import { SafeAreaProvider } from "react-native-safe-area-context";
-import CartProvider from "@/contexts/CartProvider";
-import AuthProvider from "@/contexts/AuthProvider";
+import CartProvider from "@/providers/CartProvider";
+import AuthProvider from "@/providers/AuthProvider";
+import QueryProvider from "@/providers/QueryProvider";
+import { StyleSheet } from "react-native";
 
 // Prevent the splash screen from auto-hiding before asset loading is complete.
 SplashScreen.preventAutoHideAsync();
@@ -34,27 +36,35 @@ export default function RootLayout() {
   }
 
   return (
-    <SafeAreaProvider>
+    <SafeAreaProvider style={styles.safeContainer}>
       <ThemeProvider value={colorScheme === "dark" ? DarkTheme : DefaultTheme}>
-        <AuthProvider>
-          <CartProvider>
-            <Stack>
-              <Stack.Screen name="(user)" />
-              <Stack.Screen name="(admin)" />
-              <Stack.Screen name="(auth)" />
-              <Stack.Screen name="+not-found" />
-              <Stack.Screen
-                name="cart"
-                options={{
-                  title: "Cart",
-                  presentation: "modal",
-                  animation: "slide_from_bottom",
-                }}
-              />
-            </Stack>
-          </CartProvider>
-        </AuthProvider>
+        <QueryProvider>
+          <AuthProvider>
+            <CartProvider>
+              <Stack>
+                <Stack.Screen name="(user)" />
+                <Stack.Screen name="(admin)" />
+                <Stack.Screen name="(auth)" />
+                <Stack.Screen name="+not-found" />
+                <Stack.Screen
+                  name="cart"
+                  options={{
+                    title: "Cart",
+                    presentation: "modal",
+                    animation: "slide_from_bottom",
+                  }}
+                />
+              </Stack>
+            </CartProvider>
+          </AuthProvider>
+        </QueryProvider>
       </ThemeProvider>
     </SafeAreaProvider>
   );
 }
+
+const styles = StyleSheet.create({
+  safeContainer: {
+    flex: 1,
+  },
+});

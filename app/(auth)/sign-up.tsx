@@ -30,8 +30,6 @@ export default function SignUpScreen() {
     if (error) {
       Alert.alert("Error", error.message);
     }
-
-    // console.log("User", data);
   };
 
   return (

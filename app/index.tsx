@@ -1,9 +1,9 @@
 import { View, ActivityIndicator } from "react-native";
-import React from "react";
-import Button from "../components/Button";
 import { Link, Redirect } from "expo-router";
+
+import Button from "@/components/Button";
 import { supabase } from "@/lib/supabase";
-import { useAuth } from "@/contexts/AuthProvider";
+import { useAuth } from "@/providers/AuthProvider";
 
 const index = () => {
   const { session, loading, isAdmin } = useAuth();

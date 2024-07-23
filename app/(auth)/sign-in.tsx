@@ -1,12 +1,12 @@
-import Button from "@/components/Button";
 import { Link, Stack } from "expo-router";
 import { View, TextInput, StyleSheet, Text, Alert } from "react-native";
 import { z } from "zod";
 import { Controller, useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
-
-import { supabase } from "@/lib/supabase";
 import { useEffect } from "react";
+
+import Button from "@/components/Button";
+import { supabase } from "@/lib/supabase";
 
 const SignInSchema = z.object({
   email: z.string().email("Invalid email"),
@@ -31,13 +31,7 @@ export default function SignInScreen() {
     if (error) {
       Alert.alert("Error", error.message);
     }
-
-    // console.log("User", data);
   };
-
-  useEffect(() => {
-    console.log(isSubmitting);
-  }, [isSubmitting]);
 
   return (
     <View style={styles.container}>

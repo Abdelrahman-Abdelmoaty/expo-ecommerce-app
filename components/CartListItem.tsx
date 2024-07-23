@@ -1,11 +1,11 @@
 import { View, Text, StyleSheet, Image, Pressable } from "react-native";
 import React from "react";
-import { Colors } from "../constants/Colors";
+import colors from "../constants/colors";
 import { CartItem } from "@/constants/types";
 import { Link } from "expo-router";
 import { defaultPizzaImage } from "./ProductListItem";
 import { FontAwesome } from "@expo/vector-icons";
-import { useCart } from "@/contexts/CartProvider";
+import { useCart } from "@/providers/CartProvider";
 
 type CartListItemProps = {
   cartItem: CartItem;
@@ -83,7 +83,7 @@ const styles = StyleSheet.create({
     fontSize: 18,
   },
   price: {
-    color: Colors.light.tint,
+    color: colors.light.tint,
     fontWeight: "bold",
   },
 });

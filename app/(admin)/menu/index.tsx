@@ -1,11 +1,22 @@
-import products from "@/assets/data/products";
-import { FlatList, Pressable } from "react-native";
-import ProductListItem from "@/components/ProductListItem";
+import { FlatList, Pressable, Text } from "react-native";
 import { Link, Stack } from "expo-router";
 import { FontAwesome } from "@expo/vector-icons";
-import { Colors } from "@/constants/Colors";
+
+import ProductListItem from "@/components/ProductListItem";
+import colors from "@/constants/colors";
+import { useProductsList } from "@/api/products";
 
 export default function Menu() {
+  const { data, error, isLoading } = useProductsList();
+
+  if (isLoading) {
+    return <Text>Loading...</Text>;
+  }
+
+  if (error) {
+    return <Text>Error: {error.message}</Text>;
+  }
+
   return (
     <>
       <Stack.Screen
@@ -18,7 +29,7 @@ export default function Menu() {
                   <FontAwesome
                     name="plus-square-o"
                     size={24}
-                    color={Colors.light.tint}
+                    color={colors.light.tint}
                     style={{ marginRight: 10, opacity: pressed ? 0.5 : 1 }}
                   />
                 )}
@@ -29,7 +40,7 @@ export default function Menu() {
       />
 
       <FlatList
-        data={products}
+        data={data}
         renderItem={({ item }) => <ProductListItem product={item} />}
         numColumns={2}
         contentContainerStyle={{ gap: 8, padding: 10 }}
