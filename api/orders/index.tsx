@@ -30,7 +30,7 @@ export const useUserOrdersList = () => {
 
 export const useOrderDetails = (id: number) => {
   return useQuery({
-    queryKey: ["order", id],
+    queryKey: ["orders", id],
     queryFn: () => getOrder(id),
   });
 };

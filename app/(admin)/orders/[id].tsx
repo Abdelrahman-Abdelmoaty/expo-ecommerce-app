@@ -17,17 +17,7 @@ export default function OrderDetailsScreen() {
   const updateOrder = (status: OrderStatus) => {
     if (!id) return;
 
-    mutate(
-      { id: +id, status: status },
-      {
-        onSuccess: () => {
-          console.log("Order updated");
-        },
-        onError: (error) => {
-          console.error("Error updating order", error);
-        },
-      }
-    );
+    mutate({ id: +id, status: status });
   };
 
   if (isLoading) {
@@ -54,7 +44,14 @@ export default function OrderDetailsScreen() {
         ListFooterComponent={() => (
           <>
             <Text style={{ fontWeight: "bold" }}>Status</Text>
-            <View style={{ flexDirection: "row", gap: 5 }}>
+            <View
+              style={{
+                flexDirection: "row",
+                // backgroundColor: "",
+                gap: 5,
+                flexWrap: "nowrap",
+              }}
+            >
               {OrderStatusList.map((status) => (
                 <Pressable
                   key={status}

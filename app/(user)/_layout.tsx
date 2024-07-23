@@ -19,7 +19,7 @@ export default function TabLayout() {
     <Tabs
       screenOptions={{
         tabBarActiveTintColor: colors[colorScheme ?? "light"].tint,
-        headerShown: false,
+        // headerShown: false,
       }}
     >
       <Tabs.Screen name="index" options={{ href: null }} />
@@ -46,6 +46,20 @@ export default function TabLayout() {
           tabBarIcon: ({ color, focused }) => (
             <TabBarIcon
               name="list"
+              color={color}
+              style={{ opacity: focused ? 1 : 0.5 }}
+            />
+          ),
+        }}
+      />
+
+      <Tabs.Screen
+        name="profile"
+        options={{
+          title: "Profile",
+          tabBarIcon: ({ color, focused }) => (
+            <TabBarIcon
+              name="person"
               color={color}
               style={{ opacity: focused ? 1 : 0.5 }}
             />

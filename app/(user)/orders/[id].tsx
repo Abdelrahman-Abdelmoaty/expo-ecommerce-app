@@ -4,11 +4,14 @@ import { Stack, useLocalSearchParams } from "expo-router";
 import OrderListItem from "@/components/OrderListItem";
 import OrderDetailsListItem from "@/components/OrderDetailsListItem";
 import { useOrderDetails } from "@/api/orders";
+import useUpdateOrderSubscription from "@/hooks/useUpdateOrderSubscription";
 
 export default function OrderDetailsScreen() {
   const { id } = useLocalSearchParams<{ id: string }>();
 
   const { data: order, error, isLoading } = useOrderDetails(+(id ?? 1));
+
+  useUpdateOrderSubscription({ id: +(id ?? 1) });
 
   if (isLoading) {
     return <Text>Loading...</Text>;

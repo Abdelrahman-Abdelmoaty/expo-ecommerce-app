@@ -8,6 +8,7 @@ import { defaultPizzaImage } from "@/components/ProductListItem";
 import { useCart } from "@/providers/CartProvider";
 import { Size } from "@/constants/types";
 import colors from "@/constants/colors";
+import RemoteImage from "@/components/RemoteImage";
 
 export default function ProductDetails() {
   const { id } = useLocalSearchParams<{ id: string }>();
@@ -52,9 +53,11 @@ export default function ProductDetails() {
           ),
         }}
       />
-      <Image
-        source={{ uri: product.image || defaultPizzaImage }}
+      <RemoteImage
+        path={product.image}
+        fallback={defaultPizzaImage}
         style={styles.image}
+        resizeMode="contain"
       />
 
       <Text style={styles.title}>{product.name}</Text>

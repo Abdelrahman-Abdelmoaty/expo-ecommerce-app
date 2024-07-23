@@ -15,7 +15,7 @@ export const useProductsList = () => {
 
 export const useProduct = (id: number) => {
   return useQuery({
-    queryKey: ["product", id],
+    queryKey: ["products", id],
     queryFn: () => getProduct(id),
   });
 };
@@ -43,7 +43,7 @@ export const useUpdateProduct = () => {
         queryKey: ["products"],
       });
       queryClient.invalidateQueries({
-        queryKey: ["product", product.id],
+        queryKey: ["products", product.id],
       });
     },
   });
