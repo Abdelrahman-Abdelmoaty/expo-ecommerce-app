@@ -7,7 +7,7 @@ export default async function getAdminOrders({
 }) {
   const statuses = archived
     ? ["DELIVERED"]
-    : ["NEW", "PENDING", "COMPLETED", "COOKING", "DELIVERING"];
+    : ["NEW", "PENDING", "COMPLETED", "DELIVERING"];
 
   const { data, error } = await supabase
     .from("orders")

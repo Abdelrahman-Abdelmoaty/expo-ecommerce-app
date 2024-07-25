@@ -6,7 +6,7 @@ import OrderDetailsListItem from "@/components/OrderDetailsListItem";
 import { OrderStatus, OrderStatusList } from "@/constants/types";
 import colors from "@/constants/colors";
 import { useOrderDetails, useUpdateOrder } from "@/api/orders";
-import updateOrder from "@/api/orders/update-order";
+import LoadingScreen from "@/components/ui/LoadingScreen";
 
 export default function OrderDetailsScreen() {
   const { id } = useLocalSearchParams<{ id: string }>();
@@ -21,7 +21,7 @@ export default function OrderDetailsScreen() {
   };
 
   if (isLoading) {
-    return <Text>Loading...</Text>;
+    return <LoadingScreen />;
   }
 
   if (error) {
@@ -47,7 +47,6 @@ export default function OrderDetailsScreen() {
             <View
               style={{
                 flexDirection: "row",
-                // backgroundColor: "",
                 gap: 5,
                 flexWrap: "nowrap",
               }}

@@ -1,7 +1,7 @@
 {
   "expo": {
-    "name": "Pizza",
-    "slug": "pizza",
+    "name": "Shoes Store",
+    "slug": "shoes-store",
     "version": "1.0.0",
     "orientation": "portrait",
     "icon": "./assets/images/icon.png",
@@ -19,7 +19,8 @@
       "adaptiveIcon": {
         "foregroundImage": "./assets/images/adaptive-icon.png",
         "backgroundColor": "#ffffff"
-      }
+      },
+      "package": "com.abdelrahman_abdelmoaty.shoesstore"
     },
     "web": {
       "bundler": "metro",
@@ -32,6 +33,14 @@
     ],
     "experiments": {
       "typedRoutes": true
+    },
+    "extra": {
+      "router": {
+        "origin": false
+      },
+      "eas": {
+        "projectId": "2e77d89a-5f13-44c2-a5c4-14db7a3b903f"
+      }
     }
   }
 }

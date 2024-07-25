@@ -37,12 +37,11 @@ export type CartItem = {
 
 export const OrderStatusList: OrderStatus[] = [
   "PENDING",
-  "COOKING",
   "DELIVERING",
   "DELIVERED",
 ];
 
-export type OrderStatus = "PENDING" | "COOKING" | "DELIVERING" | "DELIVERED";
+export type OrderStatus = "PENDING" | "DELIVERING" | "DELIVERED";
 
 export type Profile = {
   id: string;

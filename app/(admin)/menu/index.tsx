@@ -1,16 +1,18 @@
-import { FlatList, Pressable, Text } from "react-native";
+import { FlatList, Pressable, Text, useColorScheme } from "react-native";
 import { Link, Stack } from "expo-router";
 import { FontAwesome } from "@expo/vector-icons";
 
 import ProductListItem from "@/components/ProductListItem";
 import colors from "@/constants/colors";
 import { useProductsList } from "@/api/products";
+import LoadingScreen from "@/components/ui/LoadingScreen";
 
 export default function Menu() {
   const { data, error, isLoading } = useProductsList();
+  const colorScheme = useColorScheme();
 
   if (isLoading) {
-    return <Text>Loading...</Text>;
+    return <LoadingScreen />;
   }
 
   if (error) {
@@ -29,7 +31,7 @@ export default function Menu() {
                   <FontAwesome
                     name="plus-square-o"
                     size={24}
-                    color={colors.light.tint}
+                    color={colors[colorScheme ?? "light"].text}
                     style={{ marginRight: 10, opacity: pressed ? 0.5 : 1 }}
                   />
                 )}

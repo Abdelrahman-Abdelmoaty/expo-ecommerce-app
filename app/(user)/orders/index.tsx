@@ -3,12 +3,15 @@ import { Stack } from "expo-router";
 
 import OrderListItem from "@/components/OrderListItem";
 import { useUserOrdersList } from "@/api/orders";
+import LoadingScreen from "@/components/ui/LoadingScreen";
+import EmptyScreen from "@/components/ui/EmptyScreen";
+import ThemedView from "@/components/ui/ThemedView";
 
 export default function OrdersScreen() {
   const { data, error, isLoading } = useUserOrdersList();
 
   if (isLoading) {
-    return <Text>Loading...</Text>;
+    return <LoadingScreen />;
   }
 
   if (error) {
@@ -16,15 +19,19 @@ export default function OrdersScreen() {
   }
 
   return (
-    <View>
+    <ThemedView style={{ flex: 1 }}>
       <Stack.Screen options={{ title: "Orders" }} />
 
-      <FlatList
-        data={data}
-        contentContainerStyle={{ gap: 10, padding: 10 }}
-        renderItem={({ item }) => <OrderListItem order={item} />}
-      />
-    </View>
+      {data && data.length === 0 ? (
+        <EmptyScreen />
+      ) : (
+        <FlatList
+          data={data}
+          contentContainerStyle={{ gap: 8, padding: 5 }}
+          renderItem={({ item }) => <OrderListItem order={item} />}
+        />
+      )}
+    </ThemedView>
   );
 }
 

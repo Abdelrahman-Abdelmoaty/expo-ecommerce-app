@@ -39,7 +39,6 @@ const OrderItemListItem = ({ item }: OrderItemListItemProps) => {
 
 const styles = StyleSheet.create({
   container: {
-    backgroundColor: "white",
     borderRadius: 10,
     paddingHorizontal: 12,
     paddingVertical: 8,

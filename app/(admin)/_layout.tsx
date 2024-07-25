@@ -5,10 +5,10 @@ import { TabBarIcon } from "@/components/native/TabBarIcon";
 import colors from "@/constants/colors";
 import { useColorScheme } from "@/hooks/useColorScheme";
 import { useAuth } from "@/providers/AuthProvider";
+import MaterialCommunityIcons from "@expo/vector-icons/build/MaterialCommunityIcons";
 
 export default function TabLayout() {
   const colorScheme = useColorScheme();
-
   const { isAdmin } = useAuth();
 
   if (!isAdmin) {
@@ -18,10 +18,16 @@ export default function TabLayout() {
   return (
     <Tabs
       screenOptions={{
-        tabBarActiveTintColor: colors.light.background,
-        headerShown: true,
+        tabBarActiveTintColor: colors[colorScheme ?? "light"].background,
+        headerShown: false,
         tabBarStyle: {
-          backgroundColor: colors.light.tint,
+          height: 60,
+          backgroundColor: colors[colorScheme ?? "light"].text,
+        },
+        tabBarLabelStyle: {
+          fontSize: 14,
+          fontFamily: "LatoBold",
+          paddingBottom: 5,
         },
       }}
     >
@@ -31,8 +37,12 @@ export default function TabLayout() {
         name="menu"
         options={{
           title: "Menu",
-          tabBarIcon: ({ color, focused }) => (
-            <FontAwesome name="cutlery" size={24} color={color} />
+          tabBarIcon: ({ color }) => (
+            <MaterialCommunityIcons
+              name="shoe-sneaker"
+              size={24}
+              color={color}
+            />
           ),
         }}
       />
@@ -41,12 +51,18 @@ export default function TabLayout() {
         name="orders"
         options={{
           title: "Orders",
-          tabBarIcon: ({ color, focused }) => (
-            <TabBarIcon
-              name="list"
-              color={color}
-              style={{ opacity: focused ? 1 : 0.5 }}
-            />
+          tabBarIcon: ({ color }) => (
+            <TabBarIcon name="list" size={24} color={color} />
+          ),
+        }}
+      />
+
+      <Tabs.Screen
+        name="settings"
+        options={{
+          title: "Settings",
+          tabBarIcon: ({ color }) => (
+            <FontAwesome name="gear" size={24} color={color} />
           ),
         }}
       />

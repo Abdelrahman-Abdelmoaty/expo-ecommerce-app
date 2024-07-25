@@ -1,26 +1,24 @@
 import { useLocalSearchParams, Stack, useRouter, Link } from "expo-router";
-import { Text, View, StyleSheet, Image, Pressable } from "react-native";
-import { useState } from "react";
-import { FontAwesome } from "@expo/vector-icons";
+import { Text, StyleSheet, useColorScheme, Pressable } from "react-native";
 
 import { useProduct } from "@/api/products";
 import { defaultPizzaImage } from "@/components/ProductListItem";
-import { useCart } from "@/providers/CartProvider";
-import { Size } from "@/constants/types";
-import colors from "@/constants/colors";
 import RemoteImage from "@/components/RemoteImage";
+import ThemedView from "@/components/ui/ThemedView";
+import ThemedScrollView from "@/components/ui/ThemedScrollView";
+import ThemedText from "@/components/ui/ThemedText";
+import { FontAwesome } from "@expo/vector-icons";
+import colors from "@/constants/colors";
+import LoadingScreen from "@/components/ui/LoadingScreen";
 
 export default function ProductDetails() {
   const { id } = useLocalSearchParams<{ id: string }>();
-
-  const { addItem } = useCart();
-  const router = useRouter();
-  const [selectedSize, setSelectedSize] = useState<Size>("M");
+  const colorScheme = useColorScheme();
 
   const { data: product, error, isLoading } = useProduct(+(id ?? 1));
 
   if (isLoading) {
-    return <Text>Loading...</Text>;
+    return <LoadingScreen />;
   }
 
   if (error) {
@@ -32,54 +30,55 @@ export default function ProductDetails() {
   }
 
   return (
-    <View style={styles.container}>
-      <Stack.Screen
-        options={{
-          title: product.name,
+    <ThemedScrollView contentContainerStyle={styles.scrollContainer}>
+      <ThemedView style={styles.container}>
+        <Stack.Screen
+          options={{
+            title: product.name,
 
-          headerRight: () => (
-            <Link href={`/(admin)/menu/create?id=${id}`} asChild>
-              <Pressable>
-                {({ pressed }) => (
-                  <FontAwesome
-                    name="pencil"
-                    size={24}
-                    color={colors.light.tint}
-                    style={{ marginRight: 10, opacity: pressed ? 0.5 : 1 }}
-                  />
-                )}
-              </Pressable>
-            </Link>
-          ),
-        }}
-      />
-      <RemoteImage
-        path={product.image}
-        fallback={defaultPizzaImage}
-        style={styles.image}
-        resizeMode="contain"
-      />
+            headerRight: () => (
+              <Link href={`/(admin)/menu/create?id=${id}`} asChild>
+                <Pressable>
+                  {({ pressed }) => (
+                    <FontAwesome
+                      name="pencil"
+                      size={24}
+                      color={colors[colorScheme ?? "light"].text}
+                      style={{ marginRight: 10, opacity: pressed ? 0.5 : 1 }}
+                    />
+                  )}
+                </Pressable>
+              </Link>
+            ),
+          }}
+        />
 
-      <Text style={styles.title}>{product.name}</Text>
-      <Text style={styles.price}>${product.price}</Text>
-    </View>
+        <RemoteImage
+          path={product.image}
+          fallback={defaultPizzaImage}
+          style={styles.image}
+          resizeMode="contain"
+        />
+
+        <ThemedText style={styles.price}>${product.price}</ThemedText>
+      </ThemedView>
+    </ThemedScrollView>
   );
 }
 
 const styles = StyleSheet.create({
-  container: {
-    backgroundColor: "white",
-    flex: 1,
-    padding: 10,
-    gap: 10,
+  scrollContainer: {
+    flexGrow: 1,
+    justifyContent: "center",
   },
-  title: {
-    fontSize: 24,
-    fontWeight: "600",
+  container: {
+    padding: 5,
+    flex: 1,
+    gap: 10,
   },
   price: {
     fontSize: 24,
-    fontWeight: "600",
+    fontFamily: "LatoBlackItalic",
   },
   image: {
     width: "100%",

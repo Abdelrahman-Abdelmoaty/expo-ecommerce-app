@@ -3,12 +3,13 @@ import { Stack } from "expo-router";
 
 import ProductListItem from "@/components/ProductListItem";
 import { useProductsList } from "@/api/products";
+import LoadingScreen from "@/components/ui/LoadingScreen";
 
 export default function Menu() {
   const { data, error, isLoading } = useProductsList();
 
   if (isLoading) {
-    return <Text>Loading...</Text>;
+    return <LoadingScreen />;
   }
 
   if (error) {
@@ -23,7 +24,7 @@ export default function Menu() {
         data={data}
         renderItem={({ item }) => <ProductListItem product={item} />}
         numColumns={2}
-        contentContainerStyle={{ gap: 8, padding: 10 }}
+        contentContainerStyle={{ gap: 8, padding: 5 }}
         columnWrapperStyle={{ gap: 8 }}
       />
     </>

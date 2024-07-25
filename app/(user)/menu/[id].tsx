@@ -3,22 +3,28 @@ import {
   Text,
   View,
   StyleSheet,
-  Image,
   Pressable,
   ScrollView,
+  useColorScheme,
 } from "react-native";
 import { useState } from "react";
 
 import { defaultPizzaImage } from "@/components/ProductListItem";
-import Button from "@/components/Button";
 import { useCart } from "@/providers/CartProvider";
 import { Size } from "@/constants/types";
 import { useProduct } from "@/api/products";
 import RemoteImage from "@/components/RemoteImage";
+import ThemedButton from "@/components/ui/ThemedButton";
+import ThemedScrollView from "@/components/ui/ThemedScrollView";
+import ThemedView from "@/components/ui/ThemedView";
+import ThemedText from "@/components/ui/ThemedText";
+import LoadingScreen from "@/components/ui/LoadingScreen";
 
 const SIZES: Size[] = ["S", "M", "L", "XL"];
 
 export default function ProductDetails() {
+  const colorScheme = useColorScheme();
+
   const { addItem } = useCart();
   const router = useRouter();
   const [selectedSize, setSelectedSize] = useState<Size>("M");
@@ -39,7 +45,7 @@ export default function ProductDetails() {
   };
 
   if (isLoading) {
-    return <Text>Loading...</Text>;
+    return <LoadingScreen />;
   }
 
   if (error) {
@@ -51,8 +57,8 @@ export default function ProductDetails() {
   }
 
   return (
-    <ScrollView contentContainerStyle={styles.scrollContainer}>
-      <View style={styles.container}>
+    <ThemedScrollView contentContainerStyle={styles.scrollContainer}>
+      <ThemedView style={styles.container}>
         <Stack.Screen options={{ title: product.name }} />
         <RemoteImage
           path={product.image}
@@ -60,7 +66,7 @@ export default function ProductDetails() {
           style={styles.image}
           resizeMode="contain"
         />
-        <Text style={styles.sizeTitle}>Select size</Text>
+        <ThemedText style={styles.sizeTitle}>Select size</ThemedText>
         <View style={styles.sizeContainer}>
           {SIZES.map((size) => (
             <Pressable
@@ -69,12 +75,16 @@ export default function ProductDetails() {
                 styles.size,
                 {
                   backgroundColor:
-                    selectedSize === size ? "#f0f0f0" : "#ffffff",
+                    selectedSize === size
+                      ? colorScheme === "light"
+                        ? "lightgray"
+                        : "darkgray"
+                      : "transparent",
                 },
               ]}
               onPress={() => setSelectedSize(size)}
             >
-              <Text
+              <ThemedText
                 key={size}
                 style={[
                   styles.sizeText,
@@ -84,14 +94,14 @@ export default function ProductDetails() {
                 ]}
               >
                 {size}
-              </Text>
+              </ThemedText>
             </Pressable>
           ))}
         </View>
-        <Text style={styles.price}>${product.price}</Text>
-        <Button text="Add to cart" onPress={addToCart} />
-      </View>
-    </ScrollView>
+        <ThemedText style={styles.price}>${product.price}</ThemedText>
+        <ThemedButton text="Add to cart" onPress={addToCart} />
+      </ThemedView>
+    </ThemedScrollView>
   );
 }
 
@@ -101,14 +111,13 @@ const styles = StyleSheet.create({
     justifyContent: "center",
   },
   container: {
-    backgroundColor: "white",
     padding: 10,
     flex: 1,
     gap: 10,
   },
   sizeTitle: {
     fontSize: 18,
-    fontWeight: "600",
+    fontFamily: "LatoBlackItalic",
   },
   sizeContainer: {
     flexDirection: "row",
@@ -123,12 +132,12 @@ const styles = StyleSheet.create({
   },
   sizeText: {
     fontSize: 18,
-    fontWeight: "600",
+    fontFamily: "LatoBlack",
   },
   price: {
     marginTop: "auto",
     fontSize: 24,
-    fontWeight: "600",
+    fontFamily: "LatoBlackItalic",
   },
   image: {
     width: "100%",

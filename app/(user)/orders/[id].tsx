@@ -5,6 +5,7 @@ import OrderListItem from "@/components/OrderListItem";
 import OrderDetailsListItem from "@/components/OrderDetailsListItem";
 import { useOrderDetails } from "@/api/orders";
 import useUpdateOrderSubscription from "@/hooks/useUpdateOrderSubscription";
+import LoadingScreen from "@/components/ui/LoadingScreen";
 
 export default function OrderDetailsScreen() {
   const { id } = useLocalSearchParams<{ id: string }>();
@@ -14,7 +15,7 @@ export default function OrderDetailsScreen() {
   useUpdateOrderSubscription({ id: +(id ?? 1) });
 
   if (isLoading) {
-    return <Text>Loading...</Text>;
+    return <LoadingScreen />;
   }
 
   if (error) {

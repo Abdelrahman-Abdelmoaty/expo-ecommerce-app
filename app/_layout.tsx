@@ -15,14 +15,25 @@ import CartProvider from "@/providers/CartProvider";
 import AuthProvider from "@/providers/AuthProvider";
 import QueryProvider from "@/providers/QueryProvider";
 import { StyleSheet } from "react-native";
+import ThemedView from "@/components/ui/ThemedView";
 
 // Prevent the splash screen from auto-hiding before asset loading is complete.
 SplashScreen.preventAutoHideAsync();
 
 export default function RootLayout() {
   const colorScheme = useColorScheme();
+
   const [loaded] = useFonts({
-    SpaceMono: require("../assets/fonts/SpaceMono-Regular.ttf"),
+    LatoBlack: require("../assets/fonts/Lato/Lato-Black.ttf"),
+    LatoBlackItalic: require("../assets/fonts/Lato/Lato-BlackItalic.ttf"),
+    LatoBold: require("../assets/fonts/Lato/Lato-Bold.ttf"),
+    LatoBoldItalic: require("../assets/fonts/Lato/Lato-BoldItalic.ttf"),
+    LatoLight: require("../assets/fonts/Lato/Lato-Light.ttf"),
+    LatoLightItalic: require("../assets/fonts/Lato/Lato-LightItalic.ttf"),
+    LatoRegular: require("../assets/fonts/Lato/Lato-Regular.ttf"),
+    LatoItalic: require("../assets/fonts/Lato/Lato-Italic.ttf"),
+    LatoThin: require("../assets/fonts/Lato/Lato-Thin.ttf"),
+    LatoThinItalic: require("../assets/fonts/Lato/Lato-ThinItalic.ttf"),
   });
 
   useEffect(() => {
@@ -42,9 +53,24 @@ export default function RootLayout() {
           <AuthProvider>
             <CartProvider>
               <Stack>
-                <Stack.Screen name="(user)" />
-                <Stack.Screen name="(admin)" />
-                <Stack.Screen name="(auth)" />
+                <Stack.Screen
+                  name="(user)"
+                  options={{
+                    headerShown: false,
+                  }}
+                />
+                <Stack.Screen
+                  name="(admin)"
+                  options={{
+                    headerShown: false,
+                  }}
+                />
+                <Stack.Screen
+                  name="(auth)"
+                  options={{
+                    headerShown: false,
+                  }}
+                />
                 <Stack.Screen name="+not-found" />
                 <Stack.Screen
                   name="cart"

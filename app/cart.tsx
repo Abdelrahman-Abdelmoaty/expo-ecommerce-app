@@ -1,9 +1,9 @@
 import { StyleSheet, Text, View, FlatList, Platform } from "react-native";
-import { StatusBar } from "expo-status-bar";
 
 import { useCart } from "@/providers/CartProvider";
 import CartListItem from "@/components/CartListItem";
-import Button from "@/components/Button";
+import ThemedButton from "@/components/ui/ThemedButton";
+import ThemedText from "@/components/ui/ThemedText";
 
 export default function CartScreen() {
   const { items, total, checkout } = useCart();
@@ -16,10 +16,8 @@ export default function CartScreen() {
         contentContainerStyle={{ gap: 10 }}
       />
 
-      <Text style={styles.total}>Total: ${total}</Text>
-      <Button text="Checkout" onPress={checkout} />
-
-      <StatusBar style={Platform.OS === "ios" ? "light" : "auto"} />
+      <ThemedText style={styles.total}>Total: ${total}</ThemedText>
+      <ThemedButton text="Checkout" onPress={checkout} />
     </View>
   );
 }
@@ -27,11 +25,12 @@ export default function CartScreen() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    fontSize: 20,
-    padding: 10,
+    padding: 5,
   },
   total: {
     marginTop: "auto",
-    fontWeight: "bold",
+    fontSize: 18,
+    fontFamily: "LatoBlack",
+    marginBottom: 10,
   },
 });

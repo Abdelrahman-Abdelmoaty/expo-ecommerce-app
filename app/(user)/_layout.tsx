@@ -1,5 +1,6 @@
 import { Redirect, Tabs } from "expo-router";
-import FontAwesome from "@expo/vector-icons/FontAwesome";
+import MaterialCommunityIcons from "@expo/vector-icons/MaterialCommunityIcons";
+import { FontAwesome } from "@expo/vector-icons";
 
 import { TabBarIcon } from "@/components/native/TabBarIcon";
 import colors from "@/constants/colors";
@@ -18,8 +19,16 @@ export default function TabLayout() {
   return (
     <Tabs
       screenOptions={{
-        tabBarActiveTintColor: colors[colorScheme ?? "light"].tint,
-        // headerShown: false,
+        tabBarActiveTintColor: colors[colorScheme ?? "light"].text,
+        headerShown: false,
+        tabBarStyle: {
+          height: 60,
+        },
+        tabBarLabelStyle: {
+          fontSize: 14,
+          fontFamily: "LatoBold",
+          paddingBottom: 5,
+        },
       }}
     >
       <Tabs.Screen name="index" options={{ href: null }} />
@@ -28,12 +37,11 @@ export default function TabLayout() {
         name="menu"
         options={{
           title: "Menu",
-          tabBarIcon: ({ color, focused }) => (
-            <FontAwesome
-              name="cutlery"
+          tabBarIcon: ({ color }) => (
+            <MaterialCommunityIcons
+              name="shoe-sneaker"
               size={24}
               color={color}
-              style={{ opacity: focused ? 1 : 0.5 }}
             />
           ),
         }}
@@ -43,26 +51,18 @@ export default function TabLayout() {
         name="orders"
         options={{
           title: "Orders",
-          tabBarIcon: ({ color, focused }) => (
-            <TabBarIcon
-              name="list"
-              color={color}
-              style={{ opacity: focused ? 1 : 0.5 }}
-            />
+          tabBarIcon: ({ color }) => (
+            <TabBarIcon name="list" size={24} color={color} />
           ),
         }}
       />
 
       <Tabs.Screen
-        name="profile"
+        name="settings"
         options={{
-          title: "Profile",
-          tabBarIcon: ({ color, focused }) => (
-            <TabBarIcon
-              name="person"
-              color={color}
-              style={{ opacity: focused ? 1 : 0.5 }}
-            />
+          title: "Settings",
+          tabBarIcon: ({ color }) => (
+            <FontAwesome name="gear" size={24} color={color} />
           ),
         }}
       />

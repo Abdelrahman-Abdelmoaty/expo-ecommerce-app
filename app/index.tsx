@@ -1,37 +1,51 @@
-import { View, ActivityIndicator } from "react-native";
-import { Link, Redirect } from "expo-router";
+import { StyleSheet } from "react-native";
+import { Link, Redirect, Stack } from "expo-router";
 
-import Button from "@/components/Button";
-import { supabase } from "@/lib/supabase";
+import ThemedView from "@/components/ui/ThemedView";
+import ThemedText from "@/components/ui/ThemedText";
+import ThemedButton from "@/components/ui/ThemedButton";
+import ThemedLogo from "@/components/ui/ThemedLogo";
 import { useAuth } from "@/providers/AuthProvider";
 
-const index = () => {
-  const { session, loading, isAdmin } = useAuth();
+export default function HomeScreen() {
+  const { session, isAdmin } = useAuth();
 
-  if (loading) {
-    return <ActivityIndicator />;
+  if (session && !isAdmin) {
+    return <Redirect href="/(user)/menu" />;
   }
 
-  if (!session) {
-    return <Redirect href="/sign-in" />;
-  }
-
-  if (!isAdmin) {
-    return <Redirect href="/(user)" />;
+  if (session && isAdmin) {
+    return <Redirect href="/(admin)/" />;
   }
 
   return (
-    <View style={{ flex: 1, justifyContent: "center", padding: 10 }}>
-      <Link href="/(user)" asChild>
-        <Button text="User" />
-      </Link>
-      <Link href="/(admin)" asChild>
-        <Button text="Admin" />
-      </Link>
+    <>
+      <ThemedView style={styles.container}>
+        <Stack.Screen options={{ headerShown: false }} />
 
-      <Button text="Sign out" onPress={() => supabase.auth.signOut()} />
-    </View>
+        <ThemedLogo style={styles.logo} />
+
+        <ThemedText style={styles.text}>
+          Welcome to the ultimate shoes store!
+        </ThemedText>
+      </ThemedView>
+      <ThemedView style={styles.button}>
+        <Link href="/sign-in" asChild>
+          <ThemedButton text="Continue" />
+        </Link>
+      </ThemedView>
+    </>
   );
-};
+}
 
-export default index;
+const styles = StyleSheet.create({
+  container: { flex: 1, justifyContent: "center", padding: 10 },
+  logo: { alignSelf: "center" },
+  text: {
+    textAlign: "center",
+    marginVertical: 10,
+    fontFamily: "LatoBlackItalic",
+    fontSize: 30,
+  },
+  button: { padding: 10 },
+});

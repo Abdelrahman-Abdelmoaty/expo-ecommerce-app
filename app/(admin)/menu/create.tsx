@@ -1,9 +1,9 @@
-import { StyleSheet, Text, View, TextInput, Image, Alert } from "react-native";
+import { StyleSheet, Text, View, Image, Alert, Pressable } from "react-native";
 import { useEffect, useState } from "react";
 import * as ImagePicker from "expo-image-picker";
 import { Stack, useLocalSearchParams, useRouter } from "expo-router";
 import { z } from "zod";
-import { Controller, useForm } from "react-hook-form";
+import { FormProvider, useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import * as FileSystem from "expo-file-system";
 import { randomUUID } from "expo-crypto";
@@ -11,7 +11,6 @@ import { decode } from "base64-arraybuffer";
 import { supabase } from "@/lib/supabase";
 
 import { defaultPizzaImage } from "@/components/ProductListItem";
-import Button from "@/components/Button";
 import getProduct from "@/api/products/get-product";
 import {
   useInsertProduct,
@@ -19,6 +18,10 @@ import {
   useProduct,
   useUpdateProduct,
 } from "@/api/products";
+import ThemedScrollView from "@/components/ui/ThemedScrollView";
+import ThemedButton from "@/components/ui/ThemedButton";
+import Input from "@/components/ui/Input";
+import ThemedText from "@/components/ui/ThemedText";
 
 const createProductSchema = z.object({
   name: z.string().min(1, "Name is required"),
@@ -31,12 +34,7 @@ export default function CreateProductScreen() {
 
   const { data: product } = isUpdating ? useProduct(+id) : {};
 
-  const {
-    control,
-    handleSubmit,
-    reset,
-    formState: { errors },
-  } = useForm<z.infer<typeof createProductSchema>>({
+  const form = useForm<z.infer<typeof createProductSchema>>({
     resolver: zodResolver(createProductSchema),
     defaultValues: {
       name: isUpdating ? product?.name : "",
@@ -63,11 +61,11 @@ export default function CreateProductScreen() {
     }
   }, []);
 
-  const onSubmit = (data: z.infer<typeof createProductSchema>) => {
+  const onSubmit = async (data: z.infer<typeof createProductSchema>) => {
     if (isUpdating) {
-      onUpdate(data);
+      await onUpdate(data);
     } else {
-      onCreate(data);
+      await onCreate(data);
     }
   };
 
@@ -82,7 +80,7 @@ export default function CreateProductScreen() {
       },
       {
         onSuccess: () => {
-          reset();
+          form.reset();
           setImage("");
           router.back();
         },
@@ -104,14 +102,14 @@ export default function CreateProductScreen() {
       },
       {
         onSuccess: () => {
-          reset();
+          form.reset();
           setImage("");
           router.back();
         },
       }
     );
 
-    reset();
+    form.reset();
     setImage("");
   };
 
@@ -120,7 +118,7 @@ export default function CreateProductScreen() {
 
     deleteProduct(+id, {
       onSuccess: () => {
-        reset();
+        form.reset();
         setImage("");
         router.back();
       },
@@ -167,64 +165,48 @@ export default function CreateProductScreen() {
   };
 
   return (
-    <View style={styles.container}>
-      <Stack.Screen
-        options={{ title: isUpdating ? "Update Product" : "Create Product" }}
-      />
-
-      <View>
-        <Image
-          source={{ uri: image || defaultPizzaImage }}
-          style={styles.image}
+    <FormProvider {...form}>
+      <ThemedScrollView
+        style={styles.container}
+        keyboardShouldPersistTaps="handled"
+      >
+        <Stack.Screen
+          options={{ title: isUpdating ? "Update Product" : "Create Product" }}
         />
-        <Text onPress={pickImage} style={styles.selectImage}>
-          Select Image
-        </Text>
-      </View>
 
-      <View>
-        <Text style={styles.label}>Name</Text>
-        <Controller
-          control={control}
-          name="name"
-          render={({ field: { value, onChange, onBlur } }) => (
-            <TextInput
-              value={value}
-              onChangeText={onChange}
-              onBlur={onBlur}
-              placeholder="Name"
-              style={styles.input}
+        <Pressable onPress={pickImage}>
+          <Image
+            source={{ uri: image || defaultPizzaImage }}
+            style={styles.image}
+          />
+
+          <ThemedText style={styles.selectImage}>Select Image</ThemedText>
+        </Pressable>
+
+        <View style={{ gap: 15 }}>
+          <Input name="name" label="Name" defaultValue={product?.name} />
+          <Input
+            name="price"
+            label="Price"
+            keyboardType="number-pad"
+            defaultValue={product?.price.toString()}
+          />
+
+          <ThemedButton
+            text={isUpdating ? "Update" : "Create"}
+            onPress={form.handleSubmit(onSubmit)}
+            disabled={form.formState.isSubmitting}
+          />
+          {isUpdating && (
+            <ThemedButton
+              text="Delete"
+              onPress={confirmDelete}
+              disabled={form.formState.isSubmitting}
             />
           )}
-        />
-        {errors.name && <Text>{errors.name.message}</Text>}
-      </View>
-
-      <View>
-        <Text style={styles.label}>Price</Text>
-        <Controller
-          control={control}
-          name="price"
-          render={({ field: { value, onChange, onBlur } }) => (
-            <TextInput
-              value={value}
-              onChangeText={onChange}
-              onBlur={onBlur}
-              placeholder="9.99"
-              style={styles.input}
-              keyboardType="numeric"
-            />
-          )}
-        />
-        {errors.price && <Text>{errors.price.message}</Text>}
-      </View>
-
-      <Button
-        text={isUpdating ? "Update" : "Create"}
-        onPress={handleSubmit(onSubmit)}
-      />
-      {isUpdating && <Button text="Delete" onPress={confirmDelete} />}
-    </View>
+        </View>
+      </ThemedScrollView>
+    </FormProvider>
   );
 }
 
@@ -238,22 +220,13 @@ const styles = StyleSheet.create({
     width: "50%",
     aspectRatio: 1,
     alignSelf: "center",
+    marginBottom: 10,
   },
   selectImage: {
-    fontSize: 16,
+    fontSize: 20,
     color: "grey",
     alignSelf: "center",
-  },
-  label: {
-    fontSize: 16,
-    fontWeight: "bold",
-    color: "grey",
-  },
-  input: {
-    backgroundColor: "white",
-    padding: 10,
-    borderWidth: 1,
-    borderColor: "lightgrey",
-    borderRadius: 5,
+    fontFamily: "LatoBold",
+    marginBottom: 20,
   },
 });

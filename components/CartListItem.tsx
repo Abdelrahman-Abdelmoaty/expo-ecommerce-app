@@ -1,12 +1,12 @@
-import { View, Text, StyleSheet, Image, Pressable } from "react-native";
+import { View, StyleSheet, Image, Pressable } from "react-native";
 import React from "react";
-import colors from "../constants/colors";
 import { CartItem } from "@/constants/types";
-import { Link } from "expo-router";
 import { defaultPizzaImage } from "./ProductListItem";
 import { FontAwesome } from "@expo/vector-icons";
 import { useCart } from "@/providers/CartProvider";
 import RemoteImage from "./RemoteImage";
+import ThemedView from "./ui/ThemedView";
+import ThemedText from "./ui/ThemedText";
 
 type CartListItemProps = {
   cartItem: CartItem;
@@ -15,7 +15,7 @@ type CartListItemProps = {
 const CartListItem = ({ cartItem }: CartListItemProps) => {
   const { updateQuantity } = useCart();
   return (
-    <View style={styles.container}>
+    <ThemedView style={styles.container}>
       <RemoteImage
         path={cartItem.product.image}
         fallback={defaultPizzaImage}
@@ -24,10 +24,14 @@ const CartListItem = ({ cartItem }: CartListItemProps) => {
       />
 
       <View style={{ flex: 1 }}>
-        <Text style={styles.title}>{cartItem.product.name}</Text>
+        <ThemedText style={styles.title}>{cartItem.product.name}</ThemedText>
         <View style={styles.subtitleContainer}>
-          <Text style={styles.price}>${cartItem.product.price.toFixed(2)}</Text>
-          <Text>Size: {cartItem.size}</Text>
+          <ThemedText style={styles.price}>
+            ${cartItem.product.price.toFixed(2)}
+          </ThemedText>
+          <ThemedText style={{ fontFamily: "LatoBold" }}>
+            Size: {cartItem.size}
+          </ThemedText>
         </View>
       </View>
       <View style={styles.quantitySelector}>
@@ -38,7 +42,7 @@ const CartListItem = ({ cartItem }: CartListItemProps) => {
           style={{ padding: 5 }}
         />
 
-        <Text style={styles.quantity}>{cartItem.quantity}</Text>
+        <ThemedText style={styles.quantity}>{cartItem.quantity}</ThemedText>
         <FontAwesome
           onPress={() => updateQuantity(cartItem.id, 1)}
           name="plus"
@@ -46,48 +50,44 @@ const CartListItem = ({ cartItem }: CartListItemProps) => {
           style={{ padding: 5 }}
         />
       </View>
-    </View>
+    </ThemedView>
   );
 };
 
 const styles = StyleSheet.create({
   container: {
-    backgroundColor: "white",
-    borderRadius: 10,
-    paddingHorizontal: 12,
-    paddingVertical: 8,
+    borderRadius: 5,
+    padding: 5,
     flex: 1,
     flexDirection: "row",
     alignItems: "center",
   },
   image: {
-    width: 75,
+    width: 80,
     aspectRatio: 1,
-    alignSelf: "center",
     marginRight: 10,
   },
   title: {
-    fontWeight: "500",
     fontSize: 16,
+    fontFamily: "LatoBlack",
     marginBottom: 5,
   },
   subtitleContainer: {
     flexDirection: "row",
-    gap: 5,
+    alignItems: "center",
+    gap: 15,
   },
   quantitySelector: {
     flexDirection: "row",
     gap: 10,
-    alignItems: "center",
-    marginVertical: 10,
+    marginRight: 10,
   },
   quantity: {
-    fontWeight: "500",
+    fontFamily: "LatoBlack",
     fontSize: 18,
   },
   price: {
-    color: colors.light.tint,
-    fontWeight: "bold",
+    fontFamily: "LatoBlack",
   },
 });
 
