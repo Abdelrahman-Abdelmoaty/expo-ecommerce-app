@@ -1,10 +1,11 @@
 import { CartItem, Size, Product, Tables, Order } from "@/constants/types";
-import { createContext, useContext, useState } from "react";
+import { createContext, useContext, useEffect, useState } from "react";
 import { randomUUID } from "expo-crypto";
 import { useInsertOrder } from "@/api/orders";
 import { useRouter } from "expo-router";
 import { useInsertOrderItems } from "@/api/order-Items";
 import { useAuth } from "./AuthProvider";
+import AsyncStorage from "@react-native-async-storage/async-storage";
 
 interface CartType {
   items: CartItem[];
@@ -31,6 +32,22 @@ const CartProvider = ({ children }: { children: React.ReactNode }) => {
   const { mutate: insertOrderItems } = useInsertOrderItems();
 
   const router = useRouter();
+
+  useEffect(() => {
+    const fetchCart = async () => {
+      const cart = await AsyncStorage.getItem("cart");
+
+      if (cart) {
+        setItems(JSON.parse(cart));
+      }
+    };
+
+    fetchCart();
+  }, []);
+
+  useEffect(() => {
+    AsyncStorage.setItem("cart", JSON.stringify(items));
+  }, [items]);
 
   const addItem = (product: Product, size: Size) => {
     const existingItem = items.find(
