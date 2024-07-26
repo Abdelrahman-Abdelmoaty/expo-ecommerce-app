@@ -13,6 +13,10 @@
     "preview2": {
       "android": {
         "buildType": "apk"
+      },
+      "env": {
+        "EXPO_PUBLIC_SUPABASE_URL": "https://dxknvbnhhdsdnywyminl.supabase.co",
+        "EXPO_PUBLIC_SUPABASE_ANON_KEY": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImR4a252Ym5oaGRzZG55d3ltaW5sIiwicm9sZSI6ImFub24iLCJpYXQiOjE3MjE0MTc2MTYsImV4cCI6MjAzNjk5MzYxNn0.AJ9MXcjUYgTaSDytANjwkWVUtap0xgdmgoarbtmJNao"
       }
     },
     "production": {}

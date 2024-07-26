@@ -14,7 +14,7 @@ export default function EmptyScreen() {
   const colorScheme = useColorScheme();
 
   return (
-    <ThemedView style={styles.container}>
+    <View style={styles.container}>
       <View
         style={{
           justifyContent: "center",
@@ -62,7 +62,7 @@ export default function EmptyScreen() {
           No Data
         </ThemedText>
       </View>
-    </ThemedView>
+    </View>
   );
 }
 const styles = StyleSheet.create({

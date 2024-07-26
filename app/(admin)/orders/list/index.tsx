@@ -26,7 +26,7 @@ export default function OrdersScreen() {
   }
 
   return (
-    <ThemedView style={{ flex: 1 }}>
+    <View style={{ flex: 1 }}>
       <Stack.Screen options={{ title: "Orders" }} />
       {data && data.length === 0 ? (
         <EmptyScreen />
@@ -37,7 +37,7 @@ export default function OrdersScreen() {
           renderItem={({ item }) => <OrderListItem order={item} />}
         />
       )}
-    </ThemedView>
+    </View>
   );
 }
 

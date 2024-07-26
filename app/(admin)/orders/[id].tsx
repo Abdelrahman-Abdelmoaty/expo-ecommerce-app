@@ -1,4 +1,11 @@
-import { FlatList, Pressable, StyleSheet, Text, View } from "react-native";
+import {
+  FlatList,
+  Pressable,
+  StyleSheet,
+  Text,
+  useColorScheme,
+  View,
+} from "react-native";
 import { Stack, useLocalSearchParams } from "expo-router";
 
 import OrderListItem from "@/components/OrderListItem";
@@ -10,6 +17,7 @@ import LoadingScreen from "@/components/ui/LoadingScreen";
 
 export default function OrderDetailsScreen() {
   const { id } = useLocalSearchParams<{ id: string }>();
+  const colorScheme = useColorScheme();
 
   const { data: order, error, isLoading } = useOrderDetails(+(id ?? 1));
   const { mutate } = useUpdateOrder();
@@ -56,21 +64,23 @@ export default function OrderDetailsScreen() {
                   key={status}
                   onPress={() => updateOrder(status)}
                   style={{
-                    borderColor: colors.light.tint,
+                    borderColor: colors[colorScheme ?? "light"].text,
                     borderWidth: 1,
                     padding: 10,
                     borderRadius: 5,
                     marginVertical: 10,
                     backgroundColor:
                       order.status === status
-                        ? colors.light.tint
+                        ? colors[colorScheme ?? "light"].text
                         : "transparent",
                   }}
                 >
                   <Text
                     style={{
                       color:
-                        order.status === status ? "white" : colors.light.tint,
+                        order.status === status
+                          ? colors[colorScheme ?? "light"].background
+                          : colors[colorScheme ?? "light"].text,
                     }}
                   >
                     {status}

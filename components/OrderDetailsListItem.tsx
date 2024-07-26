@@ -4,6 +4,8 @@ import colors from "@/constants/colors";
 import { OrderItem } from "@/constants/types";
 import { defaultPizzaImage } from "./ProductListItem";
 import RemoteImage from "./RemoteImage";
+import ThemedView from "./ui/ThemedView";
+import ThemedText from "./ui/ThemedText";
 
 type OrderItemListItemProps = {
   item: OrderItem;
@@ -15,7 +17,7 @@ const OrderItemListItem = ({ item }: OrderItemListItemProps) => {
   }
 
   return (
-    <View style={styles.container}>
+    <ThemedView style={styles.container}>
       <RemoteImage
         path={item.products.image}
         fallback={defaultPizzaImage}
@@ -24,16 +26,18 @@ const OrderItemListItem = ({ item }: OrderItemListItemProps) => {
       />
 
       <View style={{ flex: 1 }}>
-        <Text style={styles.title}>{item.products.name}</Text>
+        <ThemedText style={styles.title}>{item.products.name}</ThemedText>
         <View style={styles.subtitleContainer}>
-          <Text style={styles.price}>${item.products.price.toFixed(2)}</Text>
-          <Text>Size: {item.size}</Text>
+          <ThemedText style={styles.price}>
+            ${item.products.price.toFixed(2)}
+          </ThemedText>
+          <ThemedText>Size: {item.size}</ThemedText>
         </View>
       </View>
       <View style={styles.quantitySelector}>
-        <Text style={styles.quantity}>{item.quantity}</Text>
+        <ThemedText style={styles.quantity}>{item.quantity}</ThemedText>
       </View>
-    </View>
+    </ThemedView>
   );
 };
 
@@ -53,7 +57,7 @@ const styles = StyleSheet.create({
     marginRight: 10,
   },
   title: {
-    fontWeight: "500",
+    fontFamily: "LatoBold",
     fontSize: 16,
     marginBottom: 5,
   },
@@ -68,12 +72,11 @@ const styles = StyleSheet.create({
     marginVertical: 10,
   },
   quantity: {
-    fontWeight: "500",
+    fontFamily: "LatoBold",
     fontSize: 18,
   },
   price: {
-    color: colors.light.tint,
-    fontWeight: "bold",
+    fontFamily: "LatoBlack",
   },
 });
 

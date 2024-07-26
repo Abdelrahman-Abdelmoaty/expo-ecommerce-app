@@ -9,10 +9,10 @@ export default function SettingsScreen() {
     <View style={{ flex: 1, padding: 5, gap: 5 }}>
       <Stack.Screen options={{ title: "Settings" }} />
 
-      <Link href="/(user)/" asChild>
+      <Link href="/(user)/menu" asChild>
         <ThemedButton text="User" />
       </Link>
-      <Link href="/(admin)/" asChild>
+      <Link href="/(admin)/menu" asChild>
         <ThemedButton text="Admin" />
       </Link>
       <ThemedButton

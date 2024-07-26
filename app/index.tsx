@@ -15,7 +15,7 @@ export default function HomeScreen() {
   }
 
   if (session && isAdmin) {
-    return <Redirect href="/(admin)/" />;
+    return <Redirect href="/(admin)/menu" />;
   }
 
   return (
