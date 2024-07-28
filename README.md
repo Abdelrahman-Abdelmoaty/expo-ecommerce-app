@@ -1,7 +1,10 @@
 # Expo E-Commerce App
 Expo, Expo Router, Supabase App
+
 User: Browse products, cart operations, ordering operations.
+
 Admin: CRUD operations, handling orders.
+
 To test admin panel: 
    - email: admin@dev.com
    - pwd: 12345678 
