@@ -9,6 +9,8 @@ To test admin panel:
    - email: admin@dev.com
    - pwd: 12345678 
 
+All changes are realtime database changes, e.g. when user submits order, the order apears on the admin panal concurrently.
+
 This app supports multiple themes (light & dark)
 
 ## Get started
